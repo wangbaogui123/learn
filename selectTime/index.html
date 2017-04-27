@@ -1,17 +1,303 @@
 <!DOCTYPE html>
-<html>
+<html data-ng-app="app">
 	<head>
 		<meta charset="utf-8">
 	    <title>selectTime</title>
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+		<style type="text/css">
+
+  body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p,header,footer,html{margin:0;padding:0;font-weight:normal;}
+  input,button,select,textarea{outline:none; vertical-align:middle}
+  input::-moz-focus-inner{ border: 0;padding: 0;}
+  ul,li{list-style:none}
+  em,i{font-style:normal;}
+  img{border:none}
+  textarea{resize:none}
+  header,nav,section,article,footer,figure,figcaption{display:block;}
+  input[type="text"],input[type="search"]{ -ms-appearance: none; -o-appearance: none; -moz-appearance: none; -webkit-appearance: none; appearance: none; }
+  body{color:#404040;text-align:center;font-family:"microsoft yahei",Verdana;min-width:320px; height: 100%;}
+  html {max-width: 640px; min-width: 320px; width: 100%; height: 100%; margin: 0 auto;}
+			.gb-timearr-box{
+			    width: 700px;
+			    height: 350px;
+			    margin: 0 auto;
+			}
+			.gb-timearr-box .cont-box{
+			    width: 100%;
+			    height: auto;
+			    background: #fff;
+			    border:1px solid #ddd;
+			    border-radius: 3px 3px 0 0 ;
+			    overflow: hidden;
+			}
+			.gb-timearr-box .cont-box .top{
+			    height: 50px;
+			    border-bottom: 1px solid #ddd;
+			    overflow: hidden;
+			}
+			.gb-timearr-box .cont-box .top .left{
+			    width: 70px;
+			    height: 50px;
+			    border-right:1px solid #ddd; 
+			    float: left;
+			    background: url(img/line.png) no-repeat;
+			    position: relative;
+			    border-sizing:border-box;
+			}
+			.gb-timearr-box .cont-box .top .left span.days{
+			    position: absolute;
+			    top:5px ;
+			    right: 2px ;
+			}
+			.gb-timearr-box .cont-box .top .left span.week{
+			    position: absolute;
+			    bottom:5px ;
+			    left: 2px ;
+			}
+			.gb-timearr-box .cont-box .top .right{
+			    float: left;
+			    width: 628px;
+			}
+			.gb-timearr-box .cont-box .top .right p{
+			    height: 25px;
+			    line-height: 25px;
+			    width: 100%;
+			    overflow: hidden;
+			    border-bottom: 1px solid #ddd;
+			    margin: 0;
+			    padding: 0;
+			}
+			.gb-timearr-box .cont-box .top .right p span{
+			    display: block;
+			    float: left;
+			    width: 50%;
+			    text-align: center;
+			    box-sizing: border-box;
+			}
+			.gb-timearr-box .cont-box .top .right p span:nth-child(1){
+			    border-right:1px solid #ddd;
+			}
+			.gb-timearr-box .cont-box .top .right ul{
+			    width: 100%;
+			    height: 25px;
+			}
+			.gb-timearr-box .cont-box .top .right ul li{
+			    float: left;
+			    border-right: 1px solid #ddd;
+			    height: 25px;
+			    box-sizing:border-box;
+			    width: 26.17px;
+			    line-height: 25px;
+			    text-align: center;
+			}
+			.gb-timearr-box .cont-box .top .right ul li:nth-last-child(1){
+			    border-right:none;
+			}
+			.gb-timearr-box .cont-box .week-box{
+			    width: 100%;
+			    height: auto;
+			}
+			.gb-timearr-box .cont-box .week-box ul{
+			    border-bottom: 1px solid #ddd;
+			    height: 42.8px;
+			    overflow: hidden;
+			}
+			.gb-timearr-box .cont-box .week-box ul li {
+			    float: left;
+			    border-right: 1px solid #ddd;
+			    width: 13.13px;
+			    height: 100%;
+			    box-sizing: border-box;
+			    line-height: 42.8px;
+			    text-align: center;
+			    background: rgba(255,248,215,1);
+			}
+			.gb-timearr-box .cont-box .week-box ul li:nth-child(1){
+			    width: 70px;
+			    background: #fff;
+			}
+			.gb-timearr-box .cont-box .week-box ul li:nth-last-child(1){
+			    border-right: none;
+			}
+			.gb-timearr-box .cont-box .week-box ul li.cur{
+			    background: rgba(79,180,236,1);
+			}
+		</style>
 	</head>
 	<body>
-		
-		<div>
+		<!-- 时间段选择  -->
+		<div class="gb-timearr-box" ng-controller="Timearr">
+		    
+			<div class="cont-box">
+
+				<div class="top">
+					<div class="left">
+						<span class="days">
+							时间
+						</span>
+						<span class="week">
+							星期
+						</span>
+					</div>
+					<div class="right">
+					    <p><span>上午</span><span>下午</span></p>
+					    <ul>
+					    	<li ng-repeat='item in timearr.days '>{{item}}</li>
+					    </ul>
+					</div>
+				</div>
+				<div class="week-box">
+					<ul ng-repeat="arr in timearr.timecont.all" ng-mousedown="downul($index)" ng-mouseup="mouseupul($index)" ng-mouseleave="mouseleaveul($index)">
+						<li ng-click="celectTime(arr.week)">星期{{arr.week}}</li>
+						<li ng-repeat="item in arr.time" ng-class="{true:'cur',false:''}[item.ok]" ng-click="celectTime(arr.week,$index)" ng-mouseleave="mouseenterli($index)" data-time="{{item.num}}"></li>
+					</ul>
+				</div>
+
+
+			</div>
 
 		</div>
-		
 		<script type="text/javascript" src="../angular.js"></script>
+		<script type="text/javascript">
+			var app = angular.module('app', []);
+
+			app.controller("Timearr",['$scope',function($scope){
+			    
+			    $scope.timearr = {
+			        days:[],
+			        duo:false,
+			        ulindex:"",
+			        timecont:{
+			            all : [
+			                {
+			                    week:'一',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                {
+			                    week:'二',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                {
+			                    week:'三',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                {
+			                    week:'四',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                {
+			                    week:'五',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                {
+			                    week:'六',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                {
+			                    week:'七',
+			                    time:[
+			                        {ok:false,num:"0"},{ok:false,num:"0.30"},{ok:false,num:"1"},{ok:false,num:"1.30"},{ok:false,num:"2"},{ok:false,num:"2.30"},{ok:false,num:"3"},{ok:false,num:"3.30"},{ok:false,num:"4"},{ok:false,num:"4.30"},{ok:false,num:"5"},{ok:false,num:"5.30"},{ok:false,num:"6"},{ok:false,num:"6.30"},{ok:false,num:"7"},{ok:false,num:"7.30"},{ok:false,num:"8"},{ok:false,num:"8.30"},{ok:false,num:"9"},{ok:false,num:"9.30"},{ok:false,num:"10"},{ok:false,num:"10.30"},{ok:false,num:"11"},{ok:false,num:"11.30"},{ok:false,num:"12"},{ok:false,num:"12.30"},{ok:false,num:"13"},{ok:false,num:"13.30"},{ok:false,num:"14"},{ok:false,num:"14.30"},{ok:false,num:"15"},{ok:false,num:"15.30"},{ok:false,num:"16"},{ok:false,num:"16.30"},{ok:false,num:"17"},{ok:false,num:"17.30"},{ok:false,num:"18"},{ok:false,num:"18.30"},{ok:false,num:"19"},{ok:false,num:"19.30"},{ok:false,num:"20"},{ok:false,num:"20.30"},{ok:false,num:"21"},{ok:false,num:"21.30"},{ok:false,num:"22"},{ok:false,num:"22.30"},{ok:false,num:"23"},{ok:false,num:"23.30"}
+			                    ]
+			                },
+			                
+			            ],
+			            cur : []
+			        },
+			        selecTime : function(w,curindex){
+
+			            var all = $scope.timearr.timecont.all,
+			                cur = [],
+			                curarr = $scope.timearr.timecont.cur;
+
+			            for(var i = 0;i < all.length; i++){
+
+			                if(all[i].week == w){
+			      
+			                    if(curindex){
+			                       all[i].time[curindex].ok = !all[i].time[curindex].ok; 
+			                    }else{
+			                       for(var s = 0;s < all[i].time.length;s++){
+			                            all[i].time[s].ok = !all[i].time[s].ok;
+			                       } 
+			                    }
+
+			                }
+			                
+			                for(var j=0;j<all[i].time.length;j++){
+
+			                    var obj = {};
+			                    if(all[i].time[j].ok){
+			                        obj.week = all[i].week;
+			                        obj.time = all[i].time[j].num;
+			                        cur.push(obj);
+			                    }
+			                }
+			                
+			            }
+
+			            var arr1 = [{week:"一",time:[]},{week:"二",time:[]},{week:"三",time:[]},{week:"四",time:[]},{week:"五",time:[]},{week:"六",time:[]},{week:"七",time:[]},];
+
+			            for(var d = 0;d < cur.length; d++){
+			                for(var a = 0; a<arr1.length;a++){
+			                    if(cur[d].week == arr1[a].week){
+			                        arr1[a].time.push(cur[d].time);
+			                    }
+			                }
+			            }
+
+			            curarr = arr1;
+
+			            console.log(curarr);
+
+
+			        },
+			        downul:function(i){
+			            $scope.timearr.duo = true;
+			            $scope.timearr.ulindex = i;
+			            console.log(i);
+			        },
+			        mouseenterli:function(i){
+			        	
+			        	if($scope.timearr.duo){
+			        		$scope.timearr.timecont.all[$scope.timearr.ulindex].time[i].ok = !$scope.timearr.timecont.all[$scope.timearr.ulindex].time[i].ok;
+			        	}
+			        },
+			        mouseupul:function(i){
+			        	$scope.timearr.duo = false;
+			        },
+			        mouseleaveul:function(i){
+			        	if(i == $scope.timearr.ulindex){
+			        		$scope.timearr.duo = false;
+			        	}else{
+			        		$scope.timearr.duo = false;
+			        	}
+			        	
+			        }
+
+
+
+			    };
+			    $scope.timearr.days = ["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"];
+
+			    $scope.celectTime = $scope.timearr.selecTime;
+			    $scope.downul = $scope.timearr.downul;
+			    $scope.mouseenterli = $scope.timearr.mouseenterli;
+			    $scope.mouseupul = $scope.timearr.mouseupul;
+			    $scope.mouseleaveul = $scope.timearr.mouseleaveul;
+
+			}])
+		</script>
 	</body>
 </html>
