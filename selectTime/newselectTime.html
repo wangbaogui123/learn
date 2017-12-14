@@ -219,15 +219,20 @@
                     },
                     mousedownul: function(e){
 
-                        e.preventDefault()
+                        e.preventDefault();
 
-                        console.log($scope.timearr.downX);
-
-                        if($scope.timearr.downX && $scope.timearr.downX < e.pageX && $scope.timearr.upX > e.pageX && $scope.timearr.downY <= e.pageY && $scope.timearr.upX > e.pageY){
-                            $scope.timearr.isCur = !$scope.timearr.isCur;
-                        }else{
-                            $scope.timearr.isCur = true;
+                        var lis = document.getElementById("j_ul").getElementsByTagName("li");
+                        for(var i=0;i<lis.length;i++){
+                            if(e.pageX > lis[i].offsetLeft && e.pageX < lis[i].offsetLeft + lis[i].clientWidth && e.pageY > lis[i].offsetTop && e.pageY < lis[i].offsetTop + lis[i].clientHeight){
+                                $scope.timearr.isCur = !$scope.timearr.allTime[i].ok;
+                            }
                         }
+
+                        // if($scope.timearr.downX && $scope.timearr.downX < e.pageX && $scope.timearr.upX > e.pageX && $scope.timearr.downY <= e.pageY && $scope.timearr.upX > e.pageY){
+                        //     $scope.timearr.isCur = !$scope.timearr.isCur;
+                        // }else{
+                        //     $scope.timearr.isCur = true;
+                        // }
 
 
                         $scope.timearr.downX = e.pageX;
